@@ -1,0 +1,206 @@
+#include <io.stream>
+#include <string>
+
+using namespace std;
+
+const int =max_items=100;
+
+class Goods{
+    public:
+    string name;
+    int art;
+    double price;
+    void PrintAll(){
+        cout << "Name" << name << endl << "Article number" << art << endl << "Price" << price << endl;
+    
+    Goods(): name(""), art(0), price(0.0) {}
+    
+    Goods (const string& s, int i, double d) : str(s), integer(i), floatingPoint(d) {}
+    
+    };
+
+class LinkedList {
+private:
+    struct Node {
+        Goods data;
+        Node* next;
+
+        Node(const Goods& obj) : data(obj), next(nullptr) {}
+    };
+
+
+    Node* head;
+    int size;
+
+public:
+    LinkedList() : head(nullptr), size(0) {}
+
+    ~LinkedList() {
+        Node* current = head;
+        while (current != nullptr) {
+            Node* next = current->next;
+            delete current;
+            current = next;
+        }
+        head = nullptr;
+        size = 0;
+    }
+
+    // Добавление в конец списка
+    void append(const MyObject& obj) {
+        Node* newNode = new Node(obj);
+        if (head == nullptr) {
+            head = newNode;
+        } else {
+            Node* current = head;
+            while (current->next != nullptr) {
+                current = current->next;
+            }
+            current->next = newNode;
+        }
+        size++;
+    }
+
+    // Добавление после заданного индекса
+    void insertAfter(int index, const MyObject& obj) {
+        if (index < 0 || index >= size) {
+            cout << "Ошибка: Недопустимый индекс." << endl;
+            return;
+        }
+
+        Node* newNode = new Node(obj);
+        Node* current = head;
+        for (int i = 0; i < index; ++i) {
+            current = current->next;
+        }
+
+        newNode->next = current->next;
+        current->next = newNode;
+        size++;
+    }
+
+    // Добавление перед заданным индексом
+    void insertBefore(int index, const MyObject& obj) {
+        if (index < 0 || index > size) {  // Допускаем добавление в начало, если index == 0, поэтому > size.  Если index == size, добавляем в конец (как append)
+            cout << "Ошибка: Недопустимый индекс." << endl;
+            return;
+        }
+
+        if (index == 0) { // Добавление в начало списка
+            Node* newNode = new Node(obj);
+            newNode->next = head;
+            head = newNode;
+            size++;
+            return;
+        }
+        Node* newNode = new Node(obj);
+        Node* current = head;
+        Node* previous = nullptr;
+        for (int i = 0; i < index; ++i) {
+            previous = current;
+            current = current->next;
+        }
+
+        newNode->next = current;
+        previous->next = newNode;
+        size++;
+    }
+
+    // Удаление элемента по заданному индексу
+    void removeAt(int index) {
+        if (index < 0 || index >= size) {
+            cout << "Ошибка: Недопустимый индекс." << endl;
+            return;
+        }
+
+        Node* current = head;
+        Node* previous = nullptr;
+
+        if (index == 0) {
+            head = current->next;
+            delete current;
+        } else {
+            for (int i = 0; i < index; ++i) {
+                previous = current;
+                current = current->next;
+            }
+
+            previous->next = current->next;
+            delete current;
+        }
+        size--;
+    }
+
+    // Вывод всего списка на экран
+    void printList() const {
+        Node* current = head;
+        int index = 0;
+        while (current != nullptr) {
+            cout << "Индекс: " << index << ", String: " << current->data.str
+                 << ", Integer: " << current->data.integer
+                 << ", Double: " << current->data.floatingPoint << endl;
+            current = current->next;
+            index++;
+        }
+        cout << endl;
+    }
+
+    int getSize() const { return size; }
+};
+
+int main() {
+    LinkedList list;
+
+    // Добавление элементов в конец списка
+    list.append(MyObject("Первый", 1, 1.1));
+    list.append(MyObject("Второй", 2, 2.2));
+    list.append(MyObject("Третий", 3, 3.3));
+
+    cout << "Список после добавления в конец:" << endl;
+    list.printList();
+
+    // Добавление элемента после индекса 1
+    list.insertAfter(1, MyObject("После второго", 12, 12.21));
+    cout << "Список после добавления после индекса 1:" << endl;
+    list.printList();
+
+    // Добавление элемента перед индексом 2
+    list.insertBefore(2, MyObject("Перед третьим", 23, 32.23));
+    cout << "Список после добавления перед индексом 2:" << endl;
+    list.printList();
+
+    // Удаление элемента с индексом 1
+    list.removeAt(1);
+    cout << "Список после удаления элемента с индексом 1:" << endl;
+    list.printList();
+
+
+    //Пример добавления в начало
+    list.insertBefore(0, MyObject("В самом начале", 0, 0.0));
+    cout << "Список после добавления в начало списка:" << endl;
+    list.printList();
+
+   //Пример попытки добавления по некорректному индексу
+   list.insertBefore(100, MyObject("Не добавится", 100, 100.0));
+   cout << "Список после попытки добавления элемента по некорректному индексу:" << endl;
+   list.printList();
+
+   //Пример попытки удаления по некорректному индексу
+   list.removeAt(100);
+   cout << "Список после попытки удаления элемента по некорректному индексу:" << endl;
+   list.printList();
+
+    return 0;
+}
+
+//int main(){
+  //Goods milk;
+  //Goods sugar;
+    milk.name = "Gorodetskoe";
+    milk.art = 1;
+    milk.price = 100;
+    milk.PrintAll();
+    sugar.name = "Bravo";
+    sugar.art = 2;
+    sugar.price = 149.9;
+    sugar.PrintAll();
