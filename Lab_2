@@ -1,0 +1,23 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Vector {
+    
+public:
+    int a;
+public:
+    void Create(int test){
+        a = test;
+    }
+    Vector*& operator + (Vector* other){
+        Vector* b = new Vector();
+        b -> Create(a + other -> a);
+        retirn b;
+    }
+}    
+int main() {
+    Student* a = new Student(4, 5, "Masha");
+    Student::SayHello();
+}
