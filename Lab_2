@@ -452,4 +452,6 @@ int main() {
 
   cout << "\n\nMatrix 9:" << endl;
   mat9.print();
+delete[](dm1);
+delete[](dm2);
 }
