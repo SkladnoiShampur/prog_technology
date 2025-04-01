@@ -313,8 +313,8 @@ int main() {
 
   Vector v3 = v * v2;
 
-  cout << "Vector 3:" << endl;
-  if (v3.get_size() == 0) {
+  cout << "Vector 3 (v1*v2):" << endl;
+  if (v3.get_size() != 0) {
     v3.print();
   }
   else {
@@ -324,7 +324,7 @@ int main() {
   v3 = -v3;
 
   cout << "Vector 3 (-v3):" << endl;
-  if (v3.get_size() == 0) {
+  if (v3.get_size() != 0) {
     v3.print();
   }
   else {
@@ -334,7 +334,7 @@ int main() {
   v3 = v3 * 4;
 
   cout << "Vector 3 (v3 * 4):" << endl;
-  if (v3.get_size() == 0) {
+  if (v3.get_size() != 0) {
     v3.print();
   }
   else {
@@ -344,7 +344,7 @@ int main() {
   Vector v4 = v3;
 
   cout << "Vector 4 (v4 = v3):" << endl;
-  if (v4.get_size() == 0) {
+  if (v4.get_size() != 0) {
     v4.print();
   }
   else {
@@ -354,7 +354,7 @@ int main() {
   Vector v5 = v + v2;
 
   cout << "Vector 5 (v + v2):" << endl;
-  if (v5.get_size() == 0) {
+  if (v5.get_size() != 0) {
     v5.print();
   }
   else {
@@ -364,7 +364,7 @@ int main() {
   v5 = v - v2;
 
   cout << "Vector 5 (v - v2):" << endl;
-  if (v5.get_size() == 0) {
+  if (v5.get_size() != 0) {
     v5.print();
   }
   else {
