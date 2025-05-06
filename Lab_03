@@ -1,27 +1,14 @@
-#include <iostream>     // стандартный ввод-вывод
-#include <cmath>        // мат.функции для поворота
-#include <vector>       // хранение класса динамического массива
+#include <iostream>     
+#include <cmath>        
+#include <vector>       
 
-// библиотека управления памятью
-// можно переписать, чтобы не удалять объекты вручную
-// #include <memory>       
-
-// запуск файла в терминале
-// g++ -std=c++11 -o my_geometry geometry.cpp
-// ./my_geometry
-
-
-// ---- Абстрактный класс "Точка" ----
 class Point{
-    //тело класса
-    // модификатор доступа (не доступен извне)
+    
     protected:
         double x, y;
     
-    // модификатор доступа (дотупны извне)
     public:
-        // конструктор с инициализатором списка
-        Point(double x, double y): x(x), y(y) {} // значения присваиваются сразу
+        Point(double x, double y): x(x), y(y) {} 
         
         double getx() const {
             return x;
@@ -31,12 +18,10 @@ class Point{
             return y;
         }
 
-        // virtual включает механизм полиморфизма (поддерживает позднее связывание)
-        // виртуальный деструктор по умолчанию
         virtual ~Point() = default;
 
-        virtual void draw() const = 0; // виртуальный метод (=0) для переопределения в производном класссе
-        virtual void erase() const = 0;  // void ничего не возвращает, const не изменяет объект
+        virtual void draw() const = 0;
+        virtual void erase() const = 0;
         virtual void move(double dx, double dy) {
             x += dx;
             y += dy;
@@ -54,7 +39,6 @@ double distance(const Point& a, const Point& b) {
 
 // скалярное произведение
 double dot(const Point& a, const Point& b, const Point& c) {
-    // Вектор ab ⋅ bc
     double abx = b.getx() - a.getx();
     double aby = b.gety() - a.gety();
     double bcx = c.getx() - b.getx();
@@ -63,18 +47,14 @@ double dot(const Point& a, const Point& b, const Point& c) {
 }
 
 // --- Конкретная точка ---
-// класс SpecificPoint наследует в режиме public класс Point
 class SpecificPoint: public Point {
-    // тело класса
     public:
-        // вызов конструктора абстрактного класса
         SpecificPoint(double x, double y) : Point(x, y) {}
-
+        
         void draw() const override{
             std::cout << "Point at (" << x << ", " << y << ")\n"; 
         }
 
-        // имитация стирания
         void erase() const override{
             std::cout << "Erasing point at (" << x << ", " << y << ") \n";
         }
@@ -94,26 +74,22 @@ class SpecificPoint: public Point {
 
 // --- Линия ----
 class Line {
-    // тело класса
     protected:
         SpecificPoint p1, p2;
 
-    // поля  для проверки доступа
     public:
-        int publicLength = 100; // публичное поле — доступно отовсюду
+        int publicLength = 100; 
     
     protected:
-        int protectedCode = 42; // защищённое поле — доступно только в наследниках
+        int protectedCode = 42; 
     
     private:
-        int privateID = 999;    // приватное поле — доступно только внутри Line
+        int privateID = 999;    
     
     
     public:
-        // конструктор
         Line(double x1, double y1, double x2, double y2): p1(x1, y1), p2(x2, y2){}
         
-        // деструктор
         virtual ~Line() = default;
 
         virtual void draw() const {
@@ -137,15 +113,11 @@ class Line {
 };
 
 // --- Параллелограмм ----
-// виртуальное наследование virtual для избежания diamond problem
-// класс Line наследуется единожды при 
 class Parallelogram : public virtual Line {
-    // тело класса
     protected:
         SpecificPoint p3, p4;
     
     public:
-        // конструктор
         Parallelogram(double x1, double y1, double x2, double y2, 
             double x3, double y3, double x4, double y4)
             : Line(x1, y1, x2, y2), p3(x3, y3), p4(x4, y4) {}
@@ -179,9 +151,7 @@ class Parallelogram : public virtual Line {
 
 // ---- Прямоугольник ----
 class Rectangle : public Parallelogram {
-    // тело класса
     public:
-        // конструктор
         Rectangle(double x1, double y1, double x2, double y2, 
             double x3, double y3, double x4, double y4)
             : Line(x1, y1, x2, y2), Parallelogram(x1, y1, x2, y2, x3, y3, x4, y4) {}
@@ -194,7 +164,15 @@ class Rectangle : public Parallelogram {
     void erase() const override{
         std::cout << "Erasing rectangle. \n";
     }
-
+    bool hasRightAngles(const Point& p1, const Point& p2,
+                    const Point& p3, const Point& p4) {
+    // Проверим 4 угла
+   // скалярное произведение должно быть 0 тк углы 90 градусов
+    return std::abs(dot(p1, p2, p3)) < 1e-6 &&
+           std::abs(dot(p2, p3, p4)) < 1e-6 &&
+           std::abs(dot(p3, p4, p1)) < 1e-6 &&
+           std::abs(dot(p4, p1, p2)) < 1e-6;
+    }
     bool isValid() const {
         double d1 = distance(p1, p2);
         double d2 = distance(p2, p3);
@@ -211,9 +189,7 @@ class Rectangle : public Parallelogram {
 
 // --- Ромб ---
 class Rhombus : public Parallelogram {
-    // тело класса
     public:
-        // конструктор
         Rhombus(double x1, double y1, double x2, double y2,
             double x3, double y3, double x4, double y4)
             : Line(x1, y1, x2, y2), Parallelogram(x1, y1, x2, y2, x3, y3, x4, y4) {}
@@ -221,6 +197,10 @@ class Rhombus : public Parallelogram {
         void draw() const override {
             std::cout << "Rhombus:\n";
             Parallelogram::draw();
+        }
+        
+        void erase() const override{
+            std::cout << "Erasing rhombus. \n"; 
         }
 
         bool isValid() const {
@@ -246,7 +226,20 @@ class Square : public virtual Parallelogram {
             std::cout << "Square:\n";
             Parallelogram::draw();
         }
-
+        
+        void erase() const override{
+            std::cout << "Erasing square. \n"; 
+        }
+        
+        bool hasRightAngles(const Point& p1, const Point& p2,
+                    const Point& p3, const Point& p4) {
+    // Проверим 4 угла
+   // скалярное произведение должно быть 0 тк углы 90 градусов
+    return std::abs(dot(p1, p2, p3)) < 1e-6 &&
+           std::abs(dot(p2, p3, p4)) < 1e-6 &&
+           std::abs(dot(p3, p4, p1)) < 1e-6 &&
+           std::abs(dot(p4, p1, p2)) < 1e-6;
+        }
         bool isValid() const {
             double d1 = distance(p1, p2);
             double d2 = distance(p2, p3);
@@ -265,10 +258,10 @@ class Square : public virtual Parallelogram {
     int main() {
         std::vector<Parallelogram*> figures;
     
-        // Создаём три фигуры с другими координатами
-        figures.push_back(new Square(1, 1, 3, 1, 3, 3, 1, 3));           // Квадрат 2x2
-        figures.push_back(new Rectangle(0, 0, 4, 0, 4, 2, 0, 2));        // Прямоугольник 4x2
-        figures.push_back(new Rhombus(0, 0, 2, 1, 4, 0, 2, -1));         // Ромб
+        
+        figures.push_back(new Square(1, 1, 3, 1, 3, 3, 1, 3));          
+        figures.push_back(new Rectangle(0, 0, 4, 0, 4, 2, 0, 2));        
+        figures.push_back(new Rhombus(0, 0, 2, 1, 4, 0, 2, -1));        
     
         // Центр вращения — центр квадрата (2, 2)
         SpecificPoint rotationCenter(2, 2);
@@ -291,33 +284,17 @@ class Square : public virtual Parallelogram {
             std::cout << "===========================\n";
         }
     
-        // Освобождаем память
         for (Parallelogram* fig : figures) {
             delete fig;
         }
+
         
-        // проверка при определении, если требуется
-        auto* s = new Square(1, 1, 3, 1, 3, 3, 1, 3);
-        std::cout << "Square is valid? " << (s->isValid() ? "Yes" : "No") << "\n";
-        delete s;
-
-        // проверка доступа вызова переменных с разным модификатором доступа
-        Line line(0, 0, 1, 1);
-
-        std::cout << "--- Check the access to the variables with different protection ---\n";
-
-        std::cout << "line.publicLength = " << line.publicLength << "\n";
-        // std::cout << "line.protectedCode = " << line.protectedCode << "\n";
-        // std::cout << "line.privateID = " << line.privateID << "\n";
-
-
-        // проверка позднего связывания
         Line* shape1 = new Square(0, 0, 1, 0, 1, 1, 0, 1);
         Line* shape2 = new Rectangle(0, 0, 2, 0, 2, 1, 0, 1);
 
         std::cout << "--- Late binding check ---\n";
-        shape1->draw(); // вызовет Square::draw()
-        shape2->draw(); // вызовет Rectangle::draw()
+        shape1->draw(); 
+        shape2->draw(); 
 
         delete shape1;
         delete shape2;
